@@ -4,7 +4,6 @@
  * @ingroup database
  * @{
  */
-
 /**
  * @file
  * Non-specific Database query code. Used by all engines.
@@ -77,7 +76,7 @@ interface QueryConditionInterface {
 
   /**
    * Sets a condition that the specified subquery returns values.
-   * 
+   *
    * @param SelectQueryInterface $select
    *   The subquery that must contain results.
    *
@@ -85,10 +84,10 @@ interface QueryConditionInterface {
    *   The called object.
    */
   public function exists(SelectQueryInterface $select);
-  
+
   /**
    * Sets a condition that the specified subquery returns no values.
-   * 
+   *
    * @param SelectQueryInterface $select
    *   The subquery that must not contain results.
    *
@@ -96,7 +95,7 @@ interface QueryConditionInterface {
    *   The called object.
    */
   public function notExists(SelectQueryInterface $select);
-  
+
   /**
    * Gets a complete list of all conditions in this conditional clause.
    *
@@ -144,7 +143,6 @@ interface QueryConditionInterface {
    */
   public function compile(DatabaseConnection $connection, QueryPlaceholderInterface $queryPlaceholder = NULL);
 }
-
 
 /**
  * Interface for a query that can be manipulated via an alter hook.
@@ -264,14 +262,14 @@ abstract class Query implements QueryPlaceholderInterface {
 
   /**
    * The target of the connection object.
-   * 
+   *
    * @var string
    */
   protected $connectionTarget;
 
   /**
    * The key of the connection object.
-   * 
+   *
    * @var string
    */
   protected $connectionKey;
@@ -321,7 +319,7 @@ abstract class Query implements QueryPlaceholderInterface {
   }
 
   /**
-  * Implements the magic __wakeup function to reconnect to the database.
+   * Implements the magic __wakeup function to reconnect to the database.
    */
   public function __wakeup() {
     $this->connection = Database::getConnection($this->connectionTarget, $this->connectionKey);
@@ -393,6 +391,7 @@ abstract class Query implements QueryPlaceholderInterface {
   public function &getComments() {
     return $this->comments;
   }
+
 }
 
 /**
@@ -684,6 +683,7 @@ class InsertQuery extends Query {
     }
     return TRUE;
   }
+
 }
 
 /**
@@ -764,7 +764,7 @@ class DeleteQuery extends Query implements QueryConditionInterface {
     $this->condition->notExists($select);
     return $this;
   }
-  
+
   /**
    * Implements QueryConditionInterface::conditions().
    */
@@ -830,8 +830,8 @@ class DeleteQuery extends Query implements QueryConditionInterface {
 
     return $query;
   }
-}
 
+}
 
 /**
  * General class for an abstracted TRUNCATE operation.
@@ -890,6 +890,7 @@ class TruncateQuery extends Query {
 
     return $comments . 'TRUNCATE {' . $this->connection->escapeTable($this->table) . '} ';
   }
+
 }
 
 /**
@@ -999,7 +1000,7 @@ class UpdateQuery extends Query implements QueryConditionInterface {
     $this->condition->notExists($select);
     return $this;
   }
-  
+
   /**
    * Implements QueryConditionInterface::conditions().
    */
@@ -1180,6 +1181,7 @@ class UpdateQuery extends Query implements QueryConditionInterface {
  * fields() and updateFields().
  */
 class MergeQuery extends Query implements QueryConditionInterface {
+
   /**
    * Returned by execute() if an INSERT query has been executed.
    */
@@ -1255,15 +1257,15 @@ class MergeQuery extends Query implements QueryConditionInterface {
   protected $needsUpdate = FALSE;
 
   /**
-  * Constructs a MergeQuery object.
-  *
-  * @param DatabaseConnection $connection
-  *   A DatabaseConnection object.
-  * @param string $table
-  *   Name of the table to associate with this query.
-  * @param array $options
-  *   Array of database options.
-  */
+   * Constructs a MergeQuery object.
+   *
+   * @param DatabaseConnection $connection
+   *   A DatabaseConnection object.
+   * @param string $table
+   *   Name of the table to associate with this query.
+   * @param array $options
+   *   Array of database options.
+   */
   public function __construct(DatabaseConnection $connection, $table, array $options = array()) {
     $options['return'] = Database::RETURN_AFFECTED;
     parent::__construct($connection, $options);
@@ -1484,7 +1486,7 @@ class MergeQuery extends Query implements QueryConditionInterface {
     $this->condition->notExists($select);
     return $this;
   }
-  
+
   /**
    * Implements QueryConditionInterface::conditions().
    */
@@ -1524,6 +1526,7 @@ class MergeQuery extends Query implements QueryConditionInterface {
    *   The prepared query statement.
    */
   public function __toString() {
+
   }
 
   public function execute() {
@@ -1534,8 +1537,8 @@ class MergeQuery extends Query implements QueryConditionInterface {
         throw new InvalidMergeQueryException(t('Invalid merge query: no conditions'));
       }
       $select = $this->connection->select($this->conditionTable)
-        ->condition($this->condition)
-        ->forUpdate();
+          ->condition($this->condition)
+          ->forUpdate();
       $select->addExpression('1');
       if (!$select->execute()->fetchField()) {
         try {
@@ -1558,8 +1561,8 @@ class MergeQuery extends Query implements QueryConditionInterface {
       }
       if ($this->needsUpdate) {
         $update = $this->connection->update($this->table)
-          ->fields($this->updateFields)
-          ->condition($this->condition);
+            ->fields($this->updateFields)
+            ->condition($this->condition);
         if ($this->expressionFields) {
           foreach ($this->expressionFields as $field => $data) {
             $update->expression($field, $data['expression'], $data['arguments']);
@@ -1577,6 +1580,7 @@ class MergeQuery extends Query implements QueryConditionInterface {
     }
     // Transaction commits here where $transaction looses scope.
   }
+
 }
 
 /**
@@ -1689,14 +1693,14 @@ class DatabaseCondition implements QueryConditionInterface, Countable {
   public function exists(SelectQueryInterface $select) {
     return $this->condition('', $select, 'EXISTS');
   }
-  
+
   /**
    * Implements QueryConditionInterface::notExists().
    */
   public function notExists(SelectQueryInterface $select) {
     return $this->condition('', $select, 'NOT EXISTS');
   }
-  
+
   /**
    * Implements QueryConditionInterface::conditions().
    */
@@ -1814,8 +1818,10 @@ class DatabaseCondition implements QueryConditionInterface, Countable {
   function __clone() {
     $this->changed = TRUE;
     foreach ($this->conditions as $key => $condition) {
-      if ($condition['field'] instanceOf QueryConditionInterface) {
-        $this->conditions[$key]['field'] = clone($condition['field']);
+      if (isset($condition['field'])) {     //THIS SHOULD TAKE CARE OF THE ERROR
+        if ($condition['field'] instanceOf QueryConditionInterface) {
+          $this->conditions[$key]['field'] = clone($condition['field']);
+        }
       }
     }
   }
