@@ -1,0 +1,73 @@
+<?php
+
+/**
+* @file
+* Global settings page for various fields
+*/
+
+global $user;
+
+function global_config_menu() {
+    $items['admin/global_config'] = array(
+        'title' => 'Global config',
+        'description' => 'Global configuration menu',
+        'position' => 'left',
+        'weight' => -100, // Less weight so that it will appear to the extreme left, before dashboard.
+        'page callback' => 'system_admin_menu_block_page',
+        'access arguments' => array('administer site configuration'),
+        'file' => 'system.admin.inc',
+        'file path' => drupal_get_path('module', 'system'),
+    );
+
+    $items['admin/global_config/external_links'] = array(
+        'title' => 'Social links',
+        'description' => 'Global configuration for social resources',
+        'weight' => -100,
+        'page callback' => 'drupal_get_form',
+        'page arguments' => array('global_config_external_links_form'),
+        'access arguments' => array('administer site configuration'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    return $items;
+}
+
+/**
+ * Page callback: Global config settings
+ *
+ * @see global_config_menu()
+ */
+function global_config_external_links_form($form, &$form_state) {
+    // Navigation menu Share price
+    $form['fb_link'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Facebook'),
+        '#required' => FALSE,
+        '#default_value' => variable_get('fb_link', 'https://www.facebook.com/'),
+    );
+    
+      $form['twitter_link'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Twitter'),
+        '#required' => FALSE,
+        '#default_value' => variable_get('twitter_link', 'https://www.twitter.com/'),
+    );
+      
+         $form['googleplus_link'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Google Plus'),
+        '#required' => FALSE,
+        '#default_value' => variable_get('googleplus_link', 'https://plus.google.com/'),
+    );
+         
+         $form['linkedin_link'] = array(
+        '#type' => 'textfield',
+        '#title' => t('Linkedin'),
+        '#required' => FALSE,
+        '#default_value' => variable_get('linkedin_link', 'https://www.linkedin.com/'),
+    );
+         
+
+    return system_settings_form($form);
+}
+

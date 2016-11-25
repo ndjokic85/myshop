@@ -1,0 +1,15 @@
+<?php
+
+function my_jquery_update_js_alter(&$js) {
+  $path = drupal_get_path('module', 'my_jquery_update') . '/jquery.1.9.1.js';
+
+  // Copy the current jQuery file settings and change
+  $js[$path] = $js['misc/jquery.js'];
+
+  // Update necessary settings
+  $js[$path]['version'] = 1.9;
+  $js[$path]['data'] = $path;
+
+  // Finally remove the original jQuery
+  unset($js['misc/jquery.js']);
+}

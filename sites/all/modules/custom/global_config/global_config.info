@@ -1,0 +1,5 @@
+name = Global Config
+description = Global configuration module for Clinigen.
+core = 7.x
+package = Custom
+configure = admin/global_config
