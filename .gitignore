@@ -5,3 +5,4 @@ sites/*/settings*.php
 sites/*/files
 sites/*/private
 nbproject
+/sites/all/themes/myshop_bootstrap/.netbeans.xml
