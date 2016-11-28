@@ -1,0 +1,17 @@
+{
+  "name": "myshop_bootstrap",
+  "version": "1.0.0",
+  "description": "<!-- @file Instructions for subtheming using the Less Starterkit. --> <!-- @defgroup subtheme_less --> <!-- @ingroup subtheme --> # Less Starterkit",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "es"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-less": "^1.4.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "jit-grunt": "^0.10.0"
+  }
+}
