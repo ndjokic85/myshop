@@ -9,7 +9,7 @@ function myshop_bootstrap_preprocess_page(&$variables) {
 }
 
 function myshop_bootstrap_menu_tree__main_menu($variables) {
-  return "<ul class='menu nav navbar-nav'>" . $variables['tree'] . "</ul>";
+  return "<ul class='nav navbar-nav'>" . $variables['tree'] . "</ul>";
 }
 
 function myshop_bootstrap_menu_link(array $variables) {
@@ -18,11 +18,12 @@ function myshop_bootstrap_menu_link(array $variables) {
   $arrow_down = "";
   if ($element['#below']) {
     //$element['#below'][key($element['#below'])]['#attributes']['class'][] = 'my_sub_class';
+    //$element['#below'][key($element['#below'])]['#attributes']['class'][] = 'col-sm-3';
     $element['#localized_options']['attributes']['data-toggle'] = 'dropdown';
-    $element['#localized_options']['attributes']['class'][] = 'disabled';
+    // $element['#localized_options']['attributes']['class'][] = 'disabled';
 
     $sub_menu = drupal_render($element['#below']);
-    $arrow_down = '<span class="caret"></span>';
+    $arrow_down = '<span class="glyphicon glyphicon-chevron-down pull-right"></span>';
   }
   $element['#localized_options']['html'] = TRUE;
 
