@@ -1,0 +1,8 @@
+<?php
+
+function myform_form_views_exposed_form_alter(&$form, &$form_state) {
+  $a = 56;
+  $form['field_dijagonala_tid']['#options']["All"] = 'View all';
+  $form['idBoje']['#options']["All"] = 'View all';
+  $form['idProizvodjac']['#options']["All"] = 'View all';
+}
