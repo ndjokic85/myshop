@@ -106,19 +106,9 @@
                     print render($primary_nav);
                     ?>
                   <?php endif; ?>
-                  <form action="" class="navbar-form navbar-right">
-                      <div class="input-group">
-                          <input type="Search" placeholder="Search..." class="form-control" />
-                          <div class="input-group-btn">
-                              <button class="btn btn-info">
-                                  <span class="glyphicon glyphicon-search"></span>
-                              </button>
-                          </div>
-                      </div>
-                  </form>
                   <?php
                   if (!empty($page['search_container'])) {
-                    //  print render($page['search_container']);
+                    print render($page['search_container']);
                   }
                   ?>
                   <?php if (!empty($secondary_nav)): ?>
