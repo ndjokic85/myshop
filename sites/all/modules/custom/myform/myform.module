@@ -6,3 +6,18 @@ function myform_form_views_exposed_form_alter(&$form, &$form_state) {
   $form['idBoje']['#options']["All"] = 'View all';
   $form['idProizvodjac']['#options']["All"] = 'View all';
 }
+
+function myform_form_alter(&$form, &$form_state, $form_id) {
+  $a = 45;
+  $isCommerceForm = strpos($form_id, 'commerce_cart_add_to_cart_form') !== false;
+  if ($isCommerceForm) {
+    $form ['quantity'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Quantity'),
+      '#default_value' => 1,
+      '#datatype' => 'integer',
+      '#size' => 5,
+      '#weight' => 45,
+    );
+  }
+}
