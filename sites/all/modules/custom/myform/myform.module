@@ -2,7 +2,7 @@
 
 function myform_form_views_exposed_form_alter(&$form, &$form_state) {
   $a = 56;
-  $form['field_dijagonala_tid']['#options']["All"] = 'View all';
+  $form['dijagonala']['#options']["All"] = 'View all';
   $form['idBoje']['#options']["All"] = 'View all';
   $form['idProizvodjac']['#options']["All"] = 'View all';
 }
@@ -19,5 +19,30 @@ function myform_form_alter(&$form, &$form_state, $form_id) {
       '#size' => 5,
       '#weight' => 45,
     );
+
+    $form['submit'] = array(
+      '#type' => 'submit',
+      '#value' => t('Add To Cart'),
+      '#weight' => 50,
+      // Do not set #disabled in order not to prevent submission.
+      //'#attributes' => array('disabled' => 'disabled'),
+      '#validate' => array('mywebform_addtocart_validate'),
+    );
+  }
+  if ($form_id == 'search_block_form') {
+    //add botstrap class
+    $form['#attributes']['class'][] = 'navbar-form navbar-left';
+  }
+}
+
+function mywebform_addtocart_validate(&$form, &$form_state) {
+  global $user;
+  if ($user->uid == 0) {
+    unset($form['#submit'][0]);
+    unset($form['submit']);
+    $form_state['redirect'] = 'user/login';
+  }
+  else {
+    $form_state['redirect'] = 'cart';
   }
 }
