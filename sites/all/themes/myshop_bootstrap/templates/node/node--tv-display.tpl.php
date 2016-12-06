@@ -59,10 +59,36 @@ if ($view_mode == "teaser"):
 elseif ($view_mode == "full"):
   $televizor = commerce_product_load($field_televizor[0]['product_id']);
   ?>
-  <article class="product-single">
+  <article class="product">
       <h4>
           <?php print $title; ?>
       </h4>
+      <?php if (isset($televizor->field_image_tv['und'][0]['uri'])): ?>
+        <div class="image inline">
+            <img class="img-responsive" src="<?php print file_create_url($televizor->field_image_tv['und'][0]['uri']); ?>" />
+
+        </div>
+      <?php endif; ?>
+      <div class="inline">
+          <div class="price">
+              <span class="field-title">Price: </span>  <?php print $televizor->commerce_price['und'][0]['amount']; ?> <?php //print $televizor->commerce_price['und'][0]['currency'];                                      ?>
+          </div>
+          <div>
+              <?php
+              $form_id = commerce_cart_add_to_cart_form_id(array($televizor->product_id));
+              $line_item = commerce_product_line_item_new($televizor);
+              $line_item->data['context']['product_ids'] = array($televizor->product_id);
+              $form = drupal_get_form($form_id, $line_item);
+              print drupal_render($form);
+              ?>
+          </div>
+      </div>
+      <div class="clear"></div>
+      <?php if (isset($body[0]['value'])): ?>
+        <div class="description">
+            <span class="field-title">Description: </span> <?php print $body[0]['value']; ?>
+        </div>
+      <?php endif; ?>
   </article>
 <?php endif; ?>
 
