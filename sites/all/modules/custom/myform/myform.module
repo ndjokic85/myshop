@@ -10,7 +10,8 @@ function myform_form_views_exposed_form_alter(&$form, &$form_state) {
 function myform_form_alter(&$form, &$form_state, $form_id) {
   $a = 45;
   $isCommerceForm = strpos($form_id, 'commerce_cart_add_to_cart_form') !== false;
-  if ($isCommerceForm) {
+  $isSearch = strpos($_GET['q'], 'search') !== FALSE;
+  if ($isCommerceForm && !$isSearch) {
     $form ['quantity'] = array(
       '#type' => 'textfield',
       '#title' => t('Quantity'),
@@ -18,6 +19,13 @@ function myform_form_alter(&$form, &$form_state, $form_id) {
       '#datatype' => 'integer',
       '#size' => 5,
       '#weight' => 45,
+    );
+    $data = getProductsByCurrentNode();
+    $products = $data['products'];
+    $form['attributes[fied_boja]'] = array(
+      '#type' => 'select',
+      '#title' => 'Colors',
+      '#options' => $data['colorTerms'],
     );
 
     $form['submit'] = array(
@@ -33,6 +41,36 @@ function myform_form_alter(&$form, &$form_state, $form_id) {
     //add botstrap class
     $form['#attributes']['class'][] = 'navbar-form navbar-left';
   }
+}
+
+function getProductsByCurrentNode() {
+  $currentNode = menu_get_object();
+  $query = db_select('node', 'n');
+  $query->innerjoin('field_data_field_televizor', 'ft', 'n.nid = ft.entity_id');
+  $query->innerjoin('commerce_product', 'cm', 'ft.field_televizor_product_id=cm.product_id');
+  $query->fields('n')
+      ->fields('ft')
+      ->fields('cm')
+      ->condition('n.nid', $currentNode->nid, '=');
+  $results = $query->execute();
+  $product_ids = array();
+  while ($record = $results->fetchAssoc()) {
+    $product_ids[] = $record['product_id'];
+  }
+  //$vocabulary = taxonomy_vocabulary_machine_name_load('colors');
+  //$terms = taxonomy_get_tree($vocabulary->vid);
+
+  $data['products'] = commerce_product_load_multiple($product_ids);
+  $term_ids = [];
+  foreach ($data['products'] as $d) {
+    $terms_ids[] = $d->field_boja['und'][0]['tid'];
+  }
+  $colorTerms = taxonomy_term_load_multiple($terms_ids);
+  foreach ($colorTerms as $term) {
+    $elements[$term->tid] = $term->name;
+  }
+  $data['colorTerms'] = $elements;
+  return $data;
 }
 
 function mywebform_addtocart_validate(&$form, &$form_state) {

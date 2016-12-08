@@ -71,7 +71,7 @@ elseif ($view_mode == "full"):
       <?php endif; ?>
       <div class="inline">
           <div class="price">
-              <span class="field-title">Price: </span>  <?php print $televizor->commerce_price['und'][0]['amount']; ?> <?php //print $televizor->commerce_price['und'][0]['currency'];                                      ?>
+              <span class="field-title">Price: </span>  <?php print $televizor->commerce_price['und'][0]['amount']; ?> <?php //print $televizor->commerce_price['und'][0]['currency'];                                                     ?>
           </div>
           <div>
               <?php
@@ -84,6 +84,10 @@ elseif ($view_mode == "full"):
           </div>
       </div>
       <div class="clear"></div>
+      <a href="javascript:void(0)" id="myid">Javascript call</a>
+      <div class="ajax-result">
+
+      </div>
       <?php if (isset($body[0]['value'])): ?>
         <div class="description">
             <span class="field-title">Description: </span> <?php print $body[0]['value']; ?>
