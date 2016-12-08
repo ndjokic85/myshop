@@ -1,0 +1,47 @@
+<?php
+
+function ajax_test_init() {
+  drupal_add_js(drupal_get_path('module', 'ajax_test') . '/ajax.js');
+}
+
+function ajax_test_menu() {
+  $items['ajax/get'] = array(
+    'title' => 'AJAX MENU ITEM',
+    'type' => MENU_CALLBACK,
+    'page callback' => 'ajax_test_call',
+    'access arguments' => array('access content'),
+  );
+
+  return $items;
+}
+
+function ajax_test_call() {
+  $idColor = $_GET['idColor'];
+  $nid = $_GET['nid'];
+  if (isset($nid[0]) && is_numeric($nid[0])) {
+    $query = db_select('field_data_field_boja', 'fb');
+    $query->innerJoin('field_data_field_televizor', 'ft', 'fb.entity_id=ft.field_televizor_product_id');
+    $query->fields('fb', array('entity_id'))
+        ->condition('fb.field_boja_tid', $idColor, '=')
+        ->condition('ft.entity_id', $nid[0], '=')
+        ->range(0, 1);
+    $results = $query->execute();
+    $rows = $results->fetchAssoc();
+    $product = commerce_product_load($rows['entity_id']);
+    $product = formatProductData($product);
+    drupal_json_output($product);
+  }
+  exit();
+}
+
+function formatProductData($product) {
+  $data = [];
+  if (isset($product->field_image_tv['und'][0]['uri'])) {
+    $data['imgUrl'] = file_create_url($product->field_image_tv['und'][0]['uri']);
+  }
+  if (isset($product->commerce_price['und'][0]['amount'])) {
+    $data['price'] = $product->commerce_price['und'][0]['amount'];
+  }
+  $data['product_id'] = $product->product_id;
+  return $data;
+}

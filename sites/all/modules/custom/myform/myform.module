@@ -35,6 +35,7 @@ function myform_form_alter(&$form, &$form_state, $form_id) {
       // Do not set #disabled in order not to prevent submission.
       //'#attributes' => array('disabled' => 'disabled'),
       '#validate' => array('mywebform_addtocart_validate'),
+        //'#submit' => array('mywebform_form_submit'),
     );
   }
   if ($form_id == 'search_block_form') {
@@ -43,23 +44,16 @@ function myform_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
+/* function mywebform_form_submit($form, &$form_state) {
+  $a = 67;
+  } */
+
 function getProductsByCurrentNode() {
   $currentNode = menu_get_object();
-  $query = db_select('node', 'n');
-  $query->innerjoin('field_data_field_televizor', 'ft', 'n.nid = ft.entity_id');
-  $query->innerjoin('commerce_product', 'cm', 'ft.field_televizor_product_id=cm.product_id');
-  $query->fields('n')
-      ->fields('ft')
-      ->fields('cm')
-      ->condition('n.nid', $currentNode->nid, '=');
-  $results = $query->execute();
-  $product_ids = array();
-  while ($record = $results->fetchAssoc()) {
-    $product_ids[] = $record['product_id'];
-  }
+
   //$vocabulary = taxonomy_vocabulary_machine_name_load('colors');
   //$terms = taxonomy_get_tree($vocabulary->vid);
-
+  $product_ids = getProductsId($currentNode->nid);
   $data['products'] = commerce_product_load_multiple($product_ids);
   $term_ids = [];
   foreach ($data['products'] as $d) {
@@ -71,6 +65,22 @@ function getProductsByCurrentNode() {
   }
   $data['colorTerms'] = $elements;
   return $data;
+}
+
+function getProductsId($nodeId) {
+  $query = db_select('node', 'n');
+  $query->innerjoin('field_data_field_televizor', 'ft', 'n.nid = ft.entity_id');
+  $query->innerjoin('commerce_product', 'cm', 'ft.field_televizor_product_id=cm.product_id');
+  $query->fields('n')
+      ->fields('ft')
+      ->fields('cm')
+      ->condition('n.nid', $nodeId, '=');
+  $results = $query->execute();
+  $product_ids = array();
+  while ($record = $results->fetchAssoc()) {
+    $product_ids[] = $record['product_id'];
+  }
+  return $product_ids;
 }
 
 function mywebform_addtocart_validate(&$form, &$form_state) {
